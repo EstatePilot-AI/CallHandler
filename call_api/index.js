@@ -50,6 +50,12 @@ app.use(express.json());
 app.use(morgan("dev"));
 
 // Routes
+app.use("/", (req, res) => {
+  res.status(200).json({
+    status: "success",
+    message: "Welcome to the Call Handler API",
+  });
+});
 app.use("/api/v1/call", callRoutes);
 app.use("/api/v1/conv", convRoutes);
 app.use("/webhook", webhookRoutes);
