@@ -50,15 +50,15 @@ app.use(express.json());
 app.use(morgan("dev"));
 
 // Routes
+app.use("/api/v1/call", callRoutes);
+app.use("/api/v1/conv", convRoutes);
+app.use("/webhook", webhookRoutes);
 app.use("/", (req, res) => {
   res.status(200).json({
     status: "success",
     message: "Welcome to the Call Handler API",
   });
 });
-app.use("/api/v1/call", callRoutes);
-app.use("/api/v1/conv", convRoutes);
-app.use("/webhook", webhookRoutes);
 
 app.use((req, res, next) => {
   next(new AppError(`Can't find ${req.originalUrl} on this server!`, 404));
