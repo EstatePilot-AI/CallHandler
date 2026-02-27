@@ -26,6 +26,7 @@ async function loadScenarios() {
             
             return {
                 title: `Scenario ${scenario.scenario} - ${scenario.scenario_name}`,
+                description: scenario.description || '[No description available]',
                 summary: scenario.transcript_summary || scenario.Summary || '[No summary available]',
                 transcript: transcriptData,
                 audioFile: scenario.record_path ? `../${scenario.record_path}` : ''
@@ -58,6 +59,7 @@ function populateDropdown() {
 function displayScenario(index) {
     const scenario = scenarios[index];
     document.getElementById('title').textContent = scenario.title;
+    document.getElementById('description').textContent = scenario.description;
     document.getElementById('summary').textContent = scenario.summary;
     
     // Format transcript with proper line breaks

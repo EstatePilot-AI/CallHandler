@@ -1,48 +1,225 @@
 {
-  "elevenLabs_api_key": ["fd7cc44f5d83d84f18d8f535d247dbe27", "xi-api-key", "fd7cc44f5d83d84f18d8f535d247dbe27"],
+  "elevenLabs_api_key": [
+    "fd7cc44f5d83d84f18d8f535d247dbe27",
+    "xi-api-key",
+    "fd7cc44f5d83d84f18d8f535d247dbe27"
+  ],
   "Scenarios": [
     {
       "scenario": 1,
-      "scenario_name": "user Support",
+      "record_path": "public\\audioFiles\\scenario_1_record.mp3",
+      "scenario_name": "Normal interested buyer",
+      "description": "A normal interested buyer in an apartment in Cairo.",
+      "Summary": "Hazem from Estate Pilot contacted Marcelino Edward about an apartment in Cairo, specifically on 90th Street. The apartment is 200 square meters, has three rooms and a bathroom, and is priced at 3 million Egyptian pounds (negotiable). It's fully finished and located in a building with an elevator and private garage. Marcelino requested the details and a viewing appointment. Hazem will send the location and details via WhatsApp and call to schedule a viewing.",
+      "conversation_id": "conv_6101kjfqtw49ehgvt77k96z34jy5",
       "Transcript": [
         {
+          "role": "agent",
+          "message": "سلام عليكم! مع حضرتك حازم من Estate Pilot. هل بكلم أستاذ مارسلينو ادوارد؟"
+        },
+        {
           "role": "user",
-          "message": "Hello, I would like to check the status of my order."
+          "message": "أيوة أنا مارسلينو إدوارد، أهلاً وسهلاً. بتكلمني بخصوص إيه يا حازم؟"
         },
         {
           "role": "agent",
-          "message": "Sure, can you please provide me with your order number?"
+          "message": "أهلاً بك يا فندم، منورنا! كنت بكلمك بخصوص لقطة العقار الـ شقة اللي في القاهرة.. أخبارك إيه يا هندسة؟"
         },
-        { "role": "user", "message": "Yes, it's 12345." },
+        {
+          "role": "user",
+          "message": "أنا الحمد لله، هي فين في القاهرة عشان أنا مش فاكر؟"
+        },
         {
           "role": "agent",
-          "message": "Thank you. Let me check that for you."
+          "message": "يا باشا دي في القاهرة، تحديداً في شارع التسعين، في عمارة رقم اتنين بالدور التالت. موقعها ممتاز جداً وحيوي، يعني كل الخدمات حواليك."
         },
-        { "role": "user", "message": "Great, thank you for the update!" },
+        {
+          "role": "user",
+          "message": "هي الشقة دي مساحتها كام بالضبط؟ وممكن تقولي سعرها؟"
+        },
         {
           "role": "agent",
-          "message": "You're welcome! If you have any other questions, feel free to ask."
+          "message": "يا هندسة، الشقة دي مساحتها ميتين متر مربع، يعني مساحة واسعة جداً وممتازة تفتح النفس، وفيها تلات غرف وحمام. أما بالنسبة للسعر، السعر المعلن هو تلاتة مليون جنيه مصري، بس عشان حضرتك مهتم، في مساحة للتفاوض البسيط مع المالك لو خلصنا بسرعة. إيه رأيك؟"
+        },
+        {
+          "role": "user",
+          "message": "طب هي متشطبة ولا نص تشطيب؟"
+        },
+        {
+          "role": "agent",
+          "message": "يا باشا، الشقة دي تشطيب سوبر لوكس جاهز على السكن على طول، يعني مش هتحتاج تعمل فيها أي حاجة غير إنك تنقل عفشك وتستقر. ده بيوفر عليك وقت ومجهود وتكاليف كتير."
+        },
+        {
+          "role": "user",
+          "message": "ماشي يا حازم، طب قولي هي العمارة دي فيها أسانسير، جراج، أي خدمات؟"
+        },
+        {
+          "role": "agent",
+          "message": "أيوة يا فندم، العمارة فيها أسانسير طبعاً، وفيها كمان جراج خاص، يعني مش هتشيل هم الركنة خالص. ده غير إن الموقع في شارع التسعين بيضمنلك كل الخدمات حواليك، من محلات ومطاعم وكل اللي ممكن تحتاجه. إيه رأيك في التفاصيل دي؟"
+        },
+        {
+          "role": "user",
+          "message": "خلاص تمام، ابعتلي التفاصيل وممكن نحدد ميعاد نشوفها سوا."
+        },
+        {
+          "role": "agent",
+          "message": "تشرفنا جداً يا باشا، دي فرصتك بجد! هبعتلك اللوكيشن والتفاصيل الكاملة واتساب فوراً، وهكلمك كمان شوية عشان نأكد ميعاد المعاينة اللي يناسبك."
         }
-      ],
-      "transcript_summary": "the user called to inquire about the status of their order. The support agent provided an update and assured the user that their order would be delivered within the next few days.",
-      "record_path": "public\\audioFiles\\scenario_1_record.wav",
-      "conversation_id": "123"
+      ]
     },
     {
       "scenario": 2,
-      "scenario_name": "Sales Inquiry",
-      "Transcript": [],
-      "Summary": "",
-      "record_path": "public\\audioFiles\\scenario_2_record.wav",
-      "conversation_id": ""
+      "record_path": "public\\audioFiles\\scenario_2_record.mp3",
+      "description": "Agent starts with the wrong customer name but successfully pivots the apology into a sales pitch for a new lead (Ahmed). Despite the customer being hurried, frequently interrupting, and objecting to the price, the agent maintains control. By highlighting key USPs—prime location on 90th Street and move-in-ready finishing—the agent effectively overcomes the competition gap and secures a viewing appointment.",
+      "scenario_name": "Price Objection & Wrong Number Lead",
+      "Transcript": [
+        {
+          "role": "agent",
+          "message": "سلام عليكم! مع حضرتك حازم من Estate Pilot. هل بكلم أستاذ مارسلينو ادوارد؟"
+        },
+        {
+          "role": "user",
+          "message": "لا أنا مش مارسلينو إدوارد، حضرتك جبت الرقم ده منين؟ أنا اسمي أحمد."
+        },
+        {
+          "role": "agent",
+          "message": "أهلاً بك يا أستاذ أحمد، بعتذر جداً على الخطأ ده يا فندم، الرقم كان مسجل عندنا باسم أستاذ مارسلينو. بس بما إن حضرتك رديت، ممكن أستغل الفرصة وأعرفك على لقطة عقارية مميزة جداً في القاهرة، يمكن تكون مناسبة لحضرتك؟"
+        },
+        {
+          "role": "user",
+          "message": "طيب تمام بس أنجزني قولي التفاصيل بسرعة وممكن نكلمني في وقت تاني."
+        },
+        {
+          "role": "agent",
+          "message": "تمام يا باشا، عينيا ليك. عندنا شقة لقطة في القاهرة، مساحتها واسعة جداً ميتين متر، تشطيب سوبر لوكس جاهزة على السكن فوراً. السعر المعلن ثلاثة مليون جنيه، بس فيه مساحة للتفاوض البسيط لو خلصنا..."
+        },
+        {
+          "role": "user",
+          "message": "السعر غالي جداً، أنا شفت شقة قريبة من نفس المكان ده وسعرها أقل بـ 500 ألف مثلاً."
+        },
+        {
+          "role": "agent",
+          "message": "يا أستاذ أحمد، كلامك مظبوط وممكن تلاقي أسعار مختلفة، بس خليني أقولك إن الشقة دي بالظبط في شارع التسعين، الدور الثالث، وتشطيبها لوكس على أعلى مستوى، يعني مش هتحتاج تصرف عليها جنيه واحد. ده غير إن المساحة ميتين متر، ودي مساحة ممتازة جداً. السعر اللي ذكرته ده سعر معلن، وزي ما قلتلك، فيه مساحة للتفاوض..."
+        },
+        {
+          "role": "user",
+          "message": "تمام، أنا موافق مبدئياً، ممكن تحاولوا تتواصلوا معايا ونعمل معاينة سريعاً بس أنا مش فاضي دلوقتي فهضطر إني أقفل."
+        },
+        {
+          "role": "agent",
+          "message": "ولا يهمك يا باشا، هظبطلك ميعاد معاينة فوراً. هبعتلك اللوكيشن والتفاصيل على الواتساب، وهكلمك نأكد الميعاد. تشرفنا جداً، وأتمنى لك يوم سعيد!"
+        }
+      ],
+      "Summary": "The agent called Ahmed by mistake (wrong number) but successfully pitched a 200m² apartment in Cairo. Despite Ahmed's initial price objection (claiming he found a cheaper option nearby), the agent justified the 3 million EGP price with the location and finishing. Ahmed agreed to a viewing and asked for a follow-up as he was busy.",
+      "conversation_id": "conv_7201kjft6bseeev8v6ey96724cdn"
     },
     {
       "scenario": 3,
-      "scenario_name": "Technical Support",
-      "Transcript": [],
-      "Summary": "",
-      "record_path": "public\\audioFiles\\scenario_3_record.wav",
-      "conversation_id": ""
+      "scenario_name": "Emotional Validation & Noise Stress Test",
+      "record_path": "public\\audioFiles\\scenario_3_record.mp3",
+      "description": "The agent successfully navigates a high-noise environment while providing emotional reassurance to an anxious client. It demonstrates sharp focus by ignoring a random off-topic question and effectively pivots from a rejected offer to capturing new requirements for a lower-budget property, securing a follow-up appointment.",
+      "Summary": "Despite heavy background noise and the client's visible anxiety regarding legal paperwork, the agent successfully provided emotional validation and reassured the client about document safety. The agent skillfully ignored a random off-topic question about crocodiles to stay focused on the deal. After the client rejected the initial premium offer, the agent pivoted to gather new requirements (1M EGP budget, unfinished, high floor) and scheduled a follow-up call for 6 PM.",
+      "conversation_id": "conv_1101kjfv7bzffe8bqzbgjeg8fpje",
+      "Transcript": [
+        {
+          "role": "agent",
+          "message": "سلام عليكم! مع حضرتك حازم من Estate Pilot. هل بكلم أستاذ مارسلينو ادوارد؟"
+        },
+        {
+          "role": "user",
+          "message": "أيوه أنا مارسلينو إدوارد."
+        },
+        {
+          "role": "agent",
+          "message": "أهلاً بك يا فندم، منورنا! كنت بكلمك بخصوص لقطة العقار الشقة اللي في القاهرة.. أخبارك إيه يا هندسة؟"
+        },
+        {
+          "role": "user",
+          "message": "هو تمام، بس أنا إزاي أطمن لكم؟ يعني هل الورق بيبقى مظبوط؟ وأنتم حاطين الشقق في الشهر العقاري؟ هل عليها أي مديونيات؟ أنا قلقان."
+        },
+        {
+          "role": "agent",
+          "message": "سؤالك في محله يا باشا، وده حقك طبعاً. أحب أطمنك إننا في Estate Pilot بنراجع كل الأوراق والمستندات الخاصة بأي عقار بنعرضه، وبنتأكد إن مفيش عليه أي مديونيات وإن كل حاجة سليمة ومسجلة في الشهر العقاري قبل ما نعرضه على عملائنا الكرام. يعني الشقة دي ورقها سليم مية في المية وجاهزة على التسجيل."
+        },
+        {
+          "role": "user",
+          "message": "طب هو التمساح بياكل قشطة بلبن؟"
+        },
+        {
+          "role": "agent",
+          "message": "يا باشا، التماسيح دي ليها أكلها الخاص، مش بتفكر في اللبن خالص! بس خليني أقولك اللي يهمك في الشقة دي عشان متضيعش مننا فرصة زي دي. الشقة دي مساحتها واسعة جداً وممتازة، حوالي ميتين متر مربع، وتشطيبها سوبر لوكس جاهز على السكن على طول."
+        },
+        {
+          "role": "user",
+          "message": "حاسس إن الشقة دي مش مناسبة ليا.. هل ممكن يكون في شقة تانية أفضل؟"
+        },
+        {
+          "role": "agent",
+          "message": "يا باشا، ولا يهمك خالص! طلبك عندي، ومهمتي إني ألاقي لحضرتك الأنسب والأفضل. ممكن بس تقولي إيه اللي مش عاجبك في الشقة دي بالظبط، أو إيه المواصفات اللي بتدور عليها في شقتك الجديدة؟"
+        },
+        {
+          "role": "user",
+          "message": "عايز الشقة تكون بمليون جنيه، وعايزها مش متشطبة عشان أشطبها أنا بنفسي، وتكون في دور عالي في برج."
+        },
+        {
+          "role": "agent",
+          "message": "تمام يا باشا، كده الصورة وضحت أكتر بكتير! يعني حضرتك بتدور على شقة في حدود مليون جنيه، ومش متشطبة عشان تشطبها على ذوقك، وتكون في دور عالي في برج. طلباتك أوامر يا هندسة، دي مواصفات واضحة جداً وأقدر أساعدك فيها. هشوفلك فوراً حاجة بالمواصفات دي وأكيد هلاقي اللي يناسبك."
+        },
+        {
+          "role": "user",
+          "message": "تمام خلاص، دورلي على شقة وتقدروا تكلموني في وقت تاني."
+        },
+        {
+          "role": "agent",
+          "message": "تمام يا باشا، كده أنا فهمت بالظبط إيه اللي حضرتك بتدور عليه. متقلقش خالص، أنا هبدأ أبحث فوراً. تحب أكلمك امتى يا فندم؟ إيه أنسب وقت لحضرتك النهارده أو بكرة؟"
+        },
+        {
+          "role": "user",
+          "message": "ممكن الساعة 6 مساءً."
+        },
+        {
+          "role": "agent",
+          "message": "تمام يا باشا، الساعة ستة مساءً مناسب جداً. هظبط المنبه عندي وهكلمك في الميعاد ده بالظبط عشان أعرض عليك أفضل الخيارات اللي لقيتها. تشرفنا جداً يا فندم."
+        }
+      ]
+    },
+    {
+      "scenario": 4,
+      "scenario_name": "Hard Refusal & Persistence Test",
+      "record_path": "public\\audioFiles\\scenario_4_record.mp3",
+      "description": "The agent encounters a hostile, uninterested client who repeatedly refuses to engage. The model is tested on its polite persistence, attempting to deliver a high-value hook before finally respecting the client's boundaries and ending the call professionally.",
+      "Summary": "The agent encountered a hostile and uninterested client who repeatedly refused to engage. Despite the agent's attempt to use a high-value hook and maintain polite persistence, the client remained firm in their refusal. The model successfully recognized the dead-end, respected the client's boundaries, and ended the call professionally.",
+      "conversation_id": "conv_9401kjfw0hrxedr96hyjnq4rhnr5",
+      "Transcript": [
+        {
+          "role": "agent",
+          "message": "سلام عليكم! مع حضرتك حازم من Estate Pilot. هل بكلم أستاذ مارسلينو ادوارد؟"
+        },
+        {
+          "role": "user",
+          "message": "أيوا، أنت جبت رقمي منين؟"
+        },
+        {
+          "role": "agent",
+          "message": "أهلاً بك يا فندم، منورنا! رقم حضرتك وصل لنا من خلال اهتمامك بإحدى عروضنا العقارية المميزة. كنت بكلمك بخصوص لقطة..."
+        },
+        {
+          "role": "user",
+          "message": "لا أنا مش مهتم ومش فاضي."
+        },
+        {
+          "role": "agent",
+          "message": "أنا مقدر جداً وقت حضرتك يا باشا، بس صدقني المكالمة دي مش هتاخد من وقتك دقيقة واحدة وممكن تكون أهم دقيقة في يومك. الشقة دي لقطة حقيقية في القاهرة، تشطيب سوبر لوكس ومساحة واسعة جداً. ممكن أديلك فكرة سريعة..."
+        },
+        {
+          "role": "user",
+          "message": "بلا تشطيب بلا بتاع، أنا مش مهتم بالعقارات."
+        },
+        {
+          "role": "agent",
+          "message": "تمام يا فندم، أنا آسف جداً لو كنت عطلت حضرتك. واضح إن الشقة دي مش مناسبة لاحتياجاتك حالياً. تشرفنا بمعرفتك يا أستاذ مارسلينو، ويومك سعيد."
+        }
+      ]
     }
   ]
 }
