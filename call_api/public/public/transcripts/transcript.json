@@ -1,0 +1,47 @@
+{
+  "Scenarios": [
+    {
+      "scenario": 1,
+      "scenario_name": "user Support",
+      "Transcript": [
+        {
+          "role": "user",
+          "message": "Hello, I would like to check the status of my order."
+        },
+        {
+          "role": "agent",
+          "message": "Sure, can you please provide me with your order number?"
+        },
+        { "role": "user", "message": "Yes, it's 12345." },
+        {
+          "role": "agent",
+          "message": "Thank you. Let me check that for you."
+        },
+        { "role": "user", "message": "Great, thank you for the update!" },
+        {
+          "role": "agent",
+          "message": "You're welcome! If you have any other questions, feel free to ask."
+        }
+      ],
+      "transcript_summary": "the user called to inquire about the status of their order. The support agent provided an update and assured the user that their order would be delivered within the next few days.",
+      "record_path": "public\\audioFiles\\scenario_1_record.wav",
+      "conversation_id": "123"
+    },
+    {
+      "scenario": 2,
+      "scenario_name": "Sales Inquiry",
+      "Transcript": [],
+      "Summary": "",
+      "record_path": "public\\audioFiles\\scenario_2_record.wav",
+      "conversation_id": ""
+    },
+    {
+      "scenario": 3,
+      "scenario_name": "Technical Support",
+      "Transcript": [],
+      "Summary": "",
+      "record_path": "public\\audioFiles\\scenario_3_record.wav",
+      "conversation_id": ""
+    }
+  ]
+}

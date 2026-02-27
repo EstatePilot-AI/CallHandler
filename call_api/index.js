@@ -1,4 +1,5 @@
 const express = require("express");
+const path = require("path");
 const globalErrorHandler = require("./controllers/errorController");
 const AppError = require("./utils/AppError");
 const app = express();
@@ -20,7 +21,11 @@ app.set("query parser", "extended");
 
 // 1) Middlewares:
 // Set Security HTTP headers
-app.use(helmet());
+app.use(
+  helmet({
+    contentSecurityPolicy: false, // Disable CSP to allow iframes
+  })
+);
 
 // Compress all responses
 app.use(compression());
@@ -49,15 +54,17 @@ app.use(express.json());
 // Development logging
 app.use(morgan("dev"));
 
+// Serve static files from the public directory
+app.use(express.static(path.join(__dirname, "public")));
+
 // Routes
 app.use("/api/v1/call", callRoutes);
 app.use("/api/v1/conv", convRoutes);
 app.use("/webhook", webhookRoutes);
-app.use("/", (req, res) => {
-  res.status(200).json({
-    status: "success",
-    message: "Welcome to the Call Handler API",
-  });
+
+// Serve index.html at root
+app.get("/", (req, res) => {
+  res.sendFile(path.join(__dirname, "public", "index.html"));
 });
 
 app.use((req, res, next) => {
