@@ -54,8 +54,12 @@ app.use(express.json());
 // Development logging
 app.use(morgan("dev"));
 
-// Serve static files from the public directory
-app.use(express.static(path.join(__dirname, "public")));
+// Serve static files from the public directory (but not index.html)
+app.use(
+  express.static(path.join(__dirname, "public"), {
+    index: false, // Disable automatic index.html serving
+  })
+);
 
 // Routes
 app.use("/api/v1/call", callRoutes);
