@@ -24,7 +24,7 @@ app.set("query parser", "extended");
 app.use(
   helmet({
     contentSecurityPolicy: false, // Disable CSP to allow iframes
-  })
+  }),
 );
 
 // Compress all responses
@@ -63,12 +63,19 @@ app.use("/api/v1/conv", convRoutes);
 app.use("/webhook", webhookRoutes);
 
 // Serve index.html at root
-app.get("/", (req, res) => {
+app.get("/api/v1/call_log", (req, res) => {
   res.sendFile(path.join(__dirname, "public", "index.html"));
 });
 
+// Handle unhandled routes
+
 app.use((req, res, next) => {
-  next(new AppError(`Can't find ${req.originalUrl} on this server!`, 404));
+  next(
+    new AppError(
+      `Can't find ${req.originalUrl} on this server!, try navigating to /api/v1/call_log to view call logs`,
+      404,
+    ),
+  );
 });
 
 app.use(globalErrorHandler);
