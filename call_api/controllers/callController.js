@@ -1,5 +1,9 @@
 const catchAsync = require("../utils/catchAsync");
 const AppError = require("../utils/AppError");
+const {
+  buildBackendRequestBody,
+  sendToBackend,
+} = require("../services/backendService");
 
 exports.outboundCallViaTwillo = catchAsync(async (req, res, next) => {
   console.log("Request Body:", req.body);
@@ -79,33 +83,21 @@ exports.outboundCallViaTwillo = catchAsync(async (req, res, next) => {
   if (!response.ok || data.success === false) {
     console.log(response);
 
-    const backendRequestBody = {
-      leadID: String(req.body.leadInfo.id || "null"),
-      contactName: req.body.leadInfo.name || "null",
-      callId: "null",
-      summary:
-        "Call initiation failed: " +
-        (data.message || "Unknown error") +
-        (data.error ? ` - ${data.error}` : ""),
+    const backendRequestBody = buildBackendRequestBody({
+      leadID: req.body.leadInfo.id,
+      contactName: req.body.leadInfo.name,
+      summary: `Call initiation failed: ${data.message || "Unknown error"}${
+        data.error ? ` - ${data.error}` : ""
+      }`,
       duration: 0,
       callOutcome: "failed",
-    };
+    });
 
-    await fetch(process.env.BACKEND_Webhook_URL, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(backendRequestBody),
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        console.log("Data sent to Backend successfully:", backendRequestBody);
-        console.log("Response from Backend:", data);
-      })
-      .catch((err) => {
-        console.error("Error sending data to Backend:", err);
-      });
+    try {
+      await sendToBackend(backendRequestBody);
+    } catch (err) {
+      // Error already logged in sendToBackend
+    }
 
     return next(
       new AppError(
@@ -126,14 +118,4 @@ exports.outboundCallViaTwillo = catchAsync(async (req, res, next) => {
       responseStatus: response.status,
     },
   });
-});
-
-exports.doSomethingWithId = catchAsync(async (req, res, next) => {
-  const id = req.params.id;
-  if (!id) {
-    return next(new AppError("ID parameter is missing", 400));
-  } else {
-    // Your implementation here
-    res.status(200).json({ status: "success", data: { id } });
-  }
 });

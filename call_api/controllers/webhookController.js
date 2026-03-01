@@ -1,9 +1,165 @@
 const catchAsync = require("../utils/catchAsync");
 const AppError = require("../utils/AppError");
+const { fetchConversationData } = require("./convController");
+const {
+  extractLeadInfo,
+  buildBackendRequestBody,
+  sendToBackend,
+} = require("../services/backendService");
+
+// Handler for call initiation failure
+const handleCallInitiationFailure = async (webhookData) => {
+  console.log("Call Initiation Failure Response:", webhookData);
+
+  const conversationId = webhookData.data.conversation_id;
+  const conversationData = await fetchConversationData(conversationId);
+
+  const { leadID, contactName } = extractLeadInfo(conversationData);
+  const failureReason = webhookData.data.failure_reason || "Unknown reason";
+
+  // Determine call outcome based on failure reason
+  const failureReasonLower = failureReason.toLowerCase();
+  let callOutcome = "failed";
+  if (failureReasonLower.includes("busy")) {
+    callOutcome = "busy";
+  } else if (
+    failureReasonLower.includes("no-answer") ||
+    failureReasonLower.includes("noanswer")
+  ) {
+    callOutcome = "noanswer";
+  }
+
+  const backendRequestBody = buildBackendRequestBody({
+    leadID,
+    contactName,
+    callId: conversationId,
+    summary: `Call initiation failed: ${failureReason}`,
+    duration: 0,
+    callOutcome,
+  });
+
+  await sendToBackend(backendRequestBody);
+};
+
+// Handler for post call transcription
+const handlePostCallTranscription = async (webhookData) => {
+  const { data, event_timestamp } = webhookData;
+
+  // Validate required fields
+  if (!data.conversation_id || !data.agent_id || !data.status) {
+    throw new AppError(
+      "Invalid webhook payload: missing required fields",
+      400,
+    );
+  }
+
+  if (!data.metadata || !data.analysis || !data.transcript) {
+    throw new AppError(
+      "Invalid webhook payload: missing metadata, analysis, or transcript",
+      400,
+    );
+  }
+
+  if (!Array.isArray(data.transcript)) {
+    throw new AppError(
+      "Invalid webhook payload: transcript must be an array",
+      400,
+    );
+  }
+
+  const callId = data.conversation_id;
+  const agentId = data.agent_id;
+  const { leadID, contactName } = extractLeadInfo(data);
+  const status = data.status;
+  const timestampms = event_timestamp;
+  const callDuration = data.metadata.call_duration_secs;
+  const summary = data.analysis.transcript_summary;
+  const transcript = data.transcript;
+  const data_collection_results = data.analysis.data_collection_results;
+
+  console.log(data_collection_results);
+
+  // Extract data collection results with safe defaults
+  const extractedData = {
+    is_interested: {
+      value: data_collection_results.is_interested?.value || null,
+      rationale:
+        data_collection_results.is_interested?.rationale ||
+        "No rationale provided",
+    },
+    needs_matchmaking: {
+      value: data_collection_results.needs_matchmaking?.value || null,
+      rationale:
+        data_collection_results.needs_matchmaking?.rationale ||
+        "No rationale provided",
+    },
+    unanswered_questions: {
+      value: data_collection_results.unanswered_questions?.value || null,
+      rationale:
+        data_collection_results.unanswered_questions?.rationale ||
+        "No rationale provided",
+    },
+  };
+
+  // Log call details
+  console.log("Call Transcript:");
+  transcript.forEach((turn, i) => {
+    console.log(
+      `[${i + 1}] ${turn.role?.toUpperCase() || "UNKNOWN"}: ${turn.message || ""}`,
+    );
+  });
+
+  console.log(
+    `Call Summary Received - Call ID: ${callId}, Agent ID: ${agentId}, Status: ${status}, Timestamp: ${new Date(
+      timestampms * 1000,
+    ).toISOString()}, Duration: ${callDuration} seconds`,
+  );
+  console.log("Summary:", summary);
+
+  console.log("Extracted Data:");
+  Object.keys(extractedData).forEach((key) => {
+    console.log(
+      `${key}: ${extractedData[key].value} (Rationale: ${extractedData[key].rationale})`,
+    );
+  });
+
+  // Determine call outcome based on extracted data
+  let callOutcome = "notinterested";
+  if (extractedData.needs_matchmaking.value === true) {
+    callOutcome = "need_matchmaking";
+  } else if (extractedData.is_interested.value === true) {
+    callOutcome = "interested";
+  }
+
+  // Build summary with unanswered questions if applicable
+  let fullSummary = summary;
+  if (extractedData.unanswered_questions.value === true) {
+    fullSummary += `, Unanswered Questions: ${extractedData.unanswered_questions.rationale}`;
+  }
+
+  const backendRequestBody = buildBackendRequestBody({
+    leadID,
+    contactName,
+    callId,
+    summary: fullSummary,
+    duration: callDuration,
+    callOutcome,
+  });
+
+  await sendToBackend(backendRequestBody);
+};
+
+// Handler for unhandled webhook types
+const handleUnknownWebhook = async (webhookData) => {
+  const backendRequestBody = buildBackendRequestBody({
+    callId: webhookData.data?.conversation_id,
+    summary: `Received unhandled webhook type: ${webhookData.type}`,
+  });
+
+  await sendToBackend(backendRequestBody);
+};
 
 exports.reciveCallSummary = catchAsync(async (req, res, next) => {
-  const backendUrl = process.env.BACKEND_Webhook_URL;
-
   // Validate request body exists
   if (!req.body || !req.body.data) {
     return next(
@@ -11,245 +167,26 @@ exports.reciveCallSummary = catchAsync(async (req, res, next) => {
     );
   }
 
-  if (req.body.type === "call_initiation_failure") {
-    console.log("Call Initiation Failure Response:", req.body);
+  const webhookType = req.body.type;
 
-    await fetch(
-      `https://api.elevenlabs.io/v1/convai/conversations/${req.body.data.conversation_id}`,
-      {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          "xi-api-key": process.env.elvenLabsAPIKey,
-        },
-      },
-    )
-      .then((res) => res.json())
-      .then(async (conversationData) => {
-        const backendRequestBody = {
-          leadID: String(
-            conversationData.conversation_initiation_client_data
-              ?.dynamic_variables?.leadInfo__ID || "null",
-          ),
-          contactName:
-            conversationData.conversation_initiation_client_data
-              ?.dynamic_variables?.leadInfo__name || "null",
-          callId: req.body.data.conversation_id,
-          summary:
-            "Call initiation failed: " +
-            (req.body.data.failure_reason || "Unknown reason"),
-          duration: 0,
-          callOutcome: (() => {
-            const failureReason =
-              req.body.data.failure_reason?.toLowerCase() || "";
-            if (failureReason.includes("busy")) {
-              return "busy";
-            } else if (
-              failureReason.includes("no-answer") ||
-              failureReason.includes("noanswer")
-            ) {
-              return "noanswer";
-            } else {
-              return "failed";
-            }
-          })(),
-        };
+  try {
+    switch (webhookType) {
+      case "call_initiation_failure":
+        await handleCallInitiationFailure(req.body);
+        break;
 
-        await fetch(backendUrl, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(backendRequestBody),
-        })
-          .then((res) => res.json())
-          .then((data) => {
-            console.log("Data sent to Backend successfully:", {
-              ...backendRequestBody,
-              summary: "Call initiation failed",
-            });
-            console.log("Response from Backend:", data);
-          })
-          .catch((err) => {
-            console.error("Error sending data to Backend:", err);
-          });
-      })
-      .catch((err) => {
-        console.error("Error fetching conversation details:", err);
-      });
-  } else if (req.body.type === "post_call_transcription") {
-    // Validate required fields
-    const { data, event_timestamp } = req.body;
+      case "post_call_transcription":
+        await handlePostCallTranscription(req.body);
+        break;
 
-    if (!data.conversation_id || !data.agent_id || !data.status) {
-      return next(
-        new AppError("Invalid webhook payload: missing required fields", 400),
-      );
+      default:
+        await handleUnknownWebhook(req.body);
+        break;
     }
 
-    if (!data.metadata || !data.analysis || !data.transcript) {
-      return next(
-        new AppError(
-          "Invalid webhook payload: missing metadata, analysis, or transcript",
-          400,
-        ),
-      );
-    }
-
-    if (!Array.isArray(data.transcript)) {
-      return next(
-        new AppError(
-          "Invalid webhook payload: transcript must be an array",
-          400,
-        ),
-      );
-    }
-
-    const callId = data.conversation_id;
-    const agentId = data.agent_id;
-    const clientId =
-      data.conversation_initiation_client_data.dynamic_variables.leadInfo__ID ||
-      "null";
-    const contactName =
-      data.conversation_initiation_client_data.dynamic_variables
-        .leadInfo__name || "null";
-    const status = data.status;
-    const timestampms = event_timestamp;
-    const callDuration = data.metadata.call_duration_secs;
-    const summary = data.analysis.transcript_summary;
-    const transcript = data.transcript;
-    const data_collection_results = data.analysis.data_collection_results;
-    console.log(data_collection_results);
-
-    let extractedData = {
-      is_interested: {
-        value: data_collection_results.is_interested.value || "null",
-        rationale:
-          data_collection_results.is_interested.rationale ||
-          "No rationale provided",
-      },
-      needs_matchmaking: {
-        value: data_collection_results.needs_matchmaking.value || "null",
-        rationale:
-          data_collection_results.needs_matchmaking.rationale ||
-          "No rationale provided",
-      },
-      unanswered_questions: {
-        value: data_collection_results.unanswered_questions.value || "null",
-        rationale:
-          data_collection_results.unanswered_questions.rationale ||
-          "No rationale provided",
-      },
-    };
-
-    // extracting data:
-    // is_interested: {extractedData.is_interested.value, extractedData.is_interested.rationale},
-    // needs_matchmaking: {extractedData.follow_up_action.value, extractedData.follow_up_action.rationale},
-    // unanswered_questions: {extractedData.follow_up_time.value, extractedData.follow_up_time.rationale},
-    console.log("Call Transcript:");
-    transcript.forEach((turn, i) => {
-      console.log(
-        `[${i + 1}] ${turn.role?.toUpperCase() || "UNKNOWN"}: ${turn.message || ""}`,
-      );
-    });
-    console.log(
-      `Call Summary Received - Call ID: ${callId}, Agent ID: ${agentId}, Status: ${status}, Timestamp: ${new Date(
-        timestampms * 1000,
-      ).toISOString()}, Duration: ${callDuration} seconds`,
-    );
-    console.log("Summary:", summary);
-
-    console.log("Extracted Data:");
-    Object.keys(extractedData).forEach((key) => {
-      console.log(
-        `${key}: ${extractedData[key].value} (Rationale: ${extractedData[key].rationale})`,
-      );
-    });
-    //   body: {
-    //   type: 'post_call_transcription',
-    //   event_timestamp: 1765894037,
-    //   data: {
-    //     agent_id: 'agent_9201kc0rrz0neyt8afwfketf30re',
-    //     conversation_id: 'conv_4001kckqqzfwe0nsx4hy8w2j2c3d',
-    //     status: 'done',
-    //     user_id: null,
-    //     branch_id: null,
-    //     transcript: [Array],
-    //     metadata: [Object],
-    //     analysis: [Object],
-    //     conversation_initiation_client_data: [Object]
-    //   }
-    // },
-
-    // send to Backend the Data to the webhook for post_call_transcription
-    const backendRequestBody = {
-      leadID: String(clientId),
-      contactName,
-      callId,
-      summary:
-        summary +
-        (extractedData.unanswered_questions.value === true
-          ? ", Unanswered Questions: " +
-            extractedData.unanswered_questions.rationale
-          : ""),
-      duration: callDuration,
-      callOutcome: (() => {
-        if (extractedData.needs_matchmaking.value === true) {
-          return "need_matchmaking";
-        } else if (extractedData.is_interested.value === true) {
-          return "interested";
-        } else {
-          return "notinterested";
-        }
-      })(),
-    };
-
-    await fetch(backendUrl, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(backendRequestBody),
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        console.log("Data sent to Backend successfully:", backendRequestBody);
-        console.log("Response from Backend:", data);
-      })
-      .catch((err) => {
-        console.error("Error sending data to Backend:", err);
-      });
-  } else {
-    const backendRequestBody = {
-      leadID: "null",
-      contactName: "null",
-      callId: req.body.data.conversation_id || "null",
-      summary: "Received unhandled webhook type: " + req.body.type,
-      duration: 0,
-      callOutcome: "unknown",
-    };
-    await fetch(backendUrl, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(backendRequestBody),
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        console.log(
-          "Data sent to Backend for unhandled webhook type:",
-          backendRequestBody,
-        );
-        console.log("Response from Backend:", data);
-      })
-      .catch((err) => {
-        console.error(
-          "Error sending data to Backend for unhandled webhook type:",
-          err,
-        );
-      });
+    res.status(200).send("Webhook received and processed");
+  } catch (error) {
+    console.error("Error processing webhook:", error);
+    return next(error);
   }
-
-  res.status(200).send("Webhook received and processed");
 });
