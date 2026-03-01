@@ -205,7 +205,7 @@ exports.outboundCallViaTwillo = catchAsync(async (req, res, next) => {
               voice_id: process.env.elevenLabsVoiceID,
               voice_settings: {
                 stability: 0.5,
-                speed: 1.1,
+                speed: 1.3,
                 similarity_boost: 0.75,
               },
             },

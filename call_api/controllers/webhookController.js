@@ -47,10 +47,7 @@ const handlePostCallTranscription = async (webhookData) => {
 
   // Validate required fields
   if (!data.conversation_id || !data.agent_id || !data.status) {
-    throw new AppError(
-      "Invalid webhook payload: missing required fields",
-      400,
-    );
+    throw new AppError("Invalid webhook payload: missing required fields", 400);
   }
 
   if (!data.metadata || !data.analysis || !data.transcript) {
@@ -97,6 +94,12 @@ const handlePostCallTranscription = async (webhookData) => {
       value: data_collection_results.unanswered_questions?.value || null,
       rationale:
         data_collection_results.unanswered_questions?.rationale ||
+        "No rationale provided",
+    },
+    lead_state: {
+      value: data_collection_results.lead_state?.value || null,
+      rationale:
+        data_collection_results.lead_state?.rationale ||
         "No rationale provided",
     },
   };
