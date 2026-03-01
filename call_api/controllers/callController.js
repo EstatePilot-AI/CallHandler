@@ -129,9 +129,6 @@ exports.outboundCallViaTwillo = catchAsync(async (req, res, next) => {
 
           conversation_config_override: {
             turn: {
-              soft_timeout_config: {
-                message: "خليني أتاكدلك سريعا يفندم.",
-              },
               speculative_turn: true,
               turn_eagerness: 0.8,
             },
