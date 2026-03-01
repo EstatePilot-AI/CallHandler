@@ -31,6 +31,9 @@ exports.reciveCallSummary = catchAsync(async (req, res, next) => {
             conversationData.conversation_initiation_client_data
               ?.dynamic_variables?.leadInfo__ID || "null",
           ),
+          contactName:
+            conversationData.conversation_initiation_client_data
+              ?.dynamic_variables?.leadInfo__Name || "null",
           callId: req.body.data.conversation_id,
           summary:
             "Call initiation failed: " +
@@ -107,6 +110,9 @@ exports.reciveCallSummary = catchAsync(async (req, res, next) => {
     const clientId =
       data.conversation_initiation_client_data.dynamic_variables.leadInfo__ID ||
       "null";
+    const contactName =
+      data.conversation_initiation_client_data.dynamic_variables
+        .leadInfo__Name || "null";
     const status = data.status;
     const timestampms = event_timestamp;
     const callDuration = data.metadata.call_duration_secs;
@@ -178,6 +184,7 @@ exports.reciveCallSummary = catchAsync(async (req, res, next) => {
     // send to Backend the Data to the webhook for post_call_transcription
     const backendRequestBody = {
       leadID: String(clientId),
+      contactName,
       callId,
       summary:
         summary +
@@ -215,6 +222,7 @@ exports.reciveCallSummary = catchAsync(async (req, res, next) => {
   } else {
     const backendRequestBody = {
       leadID: "null",
+      contactName: "null",
       callId: req.body.data.conversation_id || "null",
       summary: "Received unhandled webhook type: " + req.body.type,
       duration: 0,
