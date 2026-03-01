@@ -5,6 +5,72 @@ const {
   sendToBackend,
 } = require("../services/backendService");
 
+// Agent Configuration for Sales
+const getAgentConfigForSales = (requestBody) => {
+  return {
+    agent_id: process.env.elvenLabsSalesAgentId,
+    agent_phone_number_id: process.env.agent_phone_number_id,
+    dynamic_variables: {
+      leadInfo__ID: requestBody.leadInfo.id || "null",
+      leadInfo__name: requestBody.leadInfo.name || "null",
+      leadInfo__phone: requestBody.leadInfo.phone || "null",
+      propInfo__type: requestBody.propInfo.type || "null",
+      propInfo__finishing: requestBody.propInfo.finishing || "null",
+      propInfo__price: requestBody.propInfo.price || "null",
+      propInfo__area: requestBody.propInfo.area || "null",
+      propInfo__rooms: requestBody.propInfo.rooms || "null",
+      propInfo__bathrooms: requestBody.propInfo.bathrooms || "null",
+      propInfo__location__country:
+        requestBody.propInfo.location.country || "null",
+      propInfo__location__governorate:
+        requestBody.propInfo.location.governorate || "null",
+      propInfo__location__city: requestBody.propInfo.location.city || "null",
+      propInfo__location__street:
+        requestBody.propInfo.location.street || "null",
+      propInfo__location__building:
+        requestBody.propInfo.location.building || "null",
+      propInfo__location__buildingNumber:
+        requestBody.propInfo.location.buildingNumber || "null",
+      propInfo__location__floor: requestBody.propInfo.location.floor || "null",
+      propInfo__location__apartmentNumber:
+        requestBody.propInfo.location.apartmentNumber || "null",
+      propInfo__additionalInfo: requestBody.propInfo.additional_info || "null",
+    },
+    prompt: `TODO`,
+    first_message: "TODO",
+  };
+};
+
+// Agent Configuration for Resales (Underdeveloped - Placeholder)
+const getAgentConfigForResales = (requestBody) => {
+  // TODO: This feature is underdeveloped and needs to be implemented
+  // Placeholder configuration for future resales agent
+  return {
+    agent_id:
+      process.env.elvenLabsResalesAgentId || "PLACEHOLDER_RESALES_AGENT",
+    agent_phone_number_id: process.env.agent_phone_number_id,
+    dynamic_variables: {
+      // Placeholder variables - to be defined later
+      leadInfo__ID: requestBody.leadInfo.id || "null",
+      leadInfo__name: requestBody.leadInfo.name || "null",
+      leadInfo__phone: requestBody.leadInfo.phone || "null",
+      // Additional resales-specific variables to be added
+    },
+  };
+};
+
+// Main Agent Configuration Router
+const getAgentConfig = (callType, requestBody) => {
+  switch (callType) {
+    case "sales":
+      return getAgentConfigForSales(requestBody);
+    case "resales":
+      return getAgentConfigForResales(requestBody);
+    default:
+      return null;
+  }
+};
+
 exports.outboundCallViaTwillo = catchAsync(async (req, res, next) => {
   console.log("Request Body:", req.body);
 
@@ -24,13 +90,26 @@ exports.outboundCallViaTwillo = catchAsync(async (req, res, next) => {
     to_number: req.body.leadInfo.phone,
   };
 
-  const agent_phone_number_id = process.env.agent_phone_number_id;
-  let agent_id;
+  // Get agent configuration based on call type
+  const agentConfig = getAgentConfig(callType, req.body);
 
-  if (callType === "sales") {
-    agent_id = process.env.elvenLabsSalesAgentId;
-  } else {
-    return next(new AppError("Invalid call type, e.g. 'sales'", 400));
+  if (!agentConfig) {
+    return next(
+      new AppError(
+        "Invalid call type. Supported types: 'sales', 'resales'",
+        400,
+      ),
+    );
+  }
+
+  // Check if resales is being used (underdeveloped)
+  if (callType === "resales") {
+    return next(
+      new AppError(
+        "Resales feature is currently underdeveloped and not available",
+        501,
+      ),
+    );
   }
 
   const response = await fetch(
@@ -42,37 +121,35 @@ exports.outboundCallViaTwillo = catchAsync(async (req, res, next) => {
         "xi-api-key": process.env.elvenLabsAPIKey,
       },
       body: JSON.stringify({
-        agent_id: agent_id,
-        agent_phone_number_id: agent_phone_number_id,
+        agent_id: agentConfig.agent_id,
+        agent_phone_number_id: agentConfig.agent_phone_number_id,
         to_number: to_number,
         conversation_initiation_client_data: {
-          dynamic_variables: {
-            leadInfo__ID: req.body.leadInfo.id || "null",
-            leadInfo__name: req.body.leadInfo.name || "null",
-            leadInfo__phone: req.body.leadInfo.phone || "null",
-            propInfo__type: req.body.propInfo.type || "null",
-            propInfo__finishing: req.body.propInfo.finishing || "null",
-            propInfo__price: req.body.propInfo.price || "null",
-            propInfo__area: req.body.propInfo.area || "null",
-            propInfo__rooms: req.body.propInfo.rooms || "null",
-            propInfo__bathrooms: req.body.propInfo.bathrooms || "null",
-            propInfo__location__country:
-              req.body.propInfo.location.country || "null",
-            propInfo__location__governorate:
-              req.body.propInfo.location.governorate || "null",
-            propInfo__location__city: req.body.propInfo.location.city || "null",
-            propInfo__location__street:
-              req.body.propInfo.location.street || "null",
-            propInfo__location__building:
-              req.body.propInfo.location.building || "null",
-            propInfo__location__buildingNumber:
-              req.body.propInfo.location.buildingNumber || "null",
-            propInfo__location__floor:
-              req.body.propInfo.location.floor || "null",
-            propInfo__location__apartmentNumber:
-              req.body.propInfo.location.apartmentNumber || "null",
-            propInfo__additionalInfo:
-              req.body.propInfo.additional_info || "null",
+          dynamic_variables: agentConfig.dynamic_variables,
+
+          conversation_config_override: {
+            turn: {
+              soft_timeout_config: {
+                message: "خليني أتاكدلك سريعا يفندم.",
+              },
+              speculative_turn: true,
+              turn_eagerness: 0.8,
+            },
+            tts: {
+              voice_id: process.env.elevenLabsVoiceID,
+              voice_settings: {
+                stability: 0.5,
+                speed: 1.1,
+                similarity_boost: 0.75,
+              },
+            },
+            agent: {
+              prompt: {
+                prompt: agentConfig.prompt,
+              },
+              first_message: agentConfig.first_message,
+              language: "ar",
+            },
           },
         },
       }),
