@@ -33,7 +33,7 @@ exports.reciveCallSummary = catchAsync(async (req, res, next) => {
           ),
           contactName:
             conversationData.conversation_initiation_client_data
-              ?.dynamic_variables?.leadInfo__Name || "null",
+              ?.dynamic_variables?.leadInfo__name || "null",
           callId: req.body.data.conversation_id,
           summary:
             "Call initiation failed: " +
@@ -112,7 +112,7 @@ exports.reciveCallSummary = catchAsync(async (req, res, next) => {
       "null";
     const contactName =
       data.conversation_initiation_client_data.dynamic_variables
-        .leadInfo__Name || "null";
+        .leadInfo__name || "null";
     const status = data.status;
     const timestampms = event_timestamp;
     const callDuration = data.metadata.call_duration_secs;

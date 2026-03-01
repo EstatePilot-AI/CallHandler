@@ -81,6 +81,7 @@ exports.outboundCallViaTwillo = catchAsync(async (req, res, next) => {
 
     const backendRequestBody = {
       leadID: String(req.body.leadInfo.id || "null"),
+      contactName: req.body.leadInfo.name || "null",
       callId: "null",
       summary:
         "Call initiation failed: " +
