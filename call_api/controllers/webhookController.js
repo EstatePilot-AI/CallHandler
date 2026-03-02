@@ -85,7 +85,7 @@ const handlePostCallTranscription = async (webhookData) => {
         "No rationale provided",
     },
     lead_state: {
-      value: data_collection_results.lead_state?.value || null,
+      value: data_collection_results.lead_state?.value || "notinterested",
       rationale:
         data_collection_results.lead_state?.rationale ||
         "No rationale provided",
