@@ -78,18 +78,6 @@ const handlePostCallTranscription = async (webhookData) => {
 
   // Extract data collection results with safe defaults
   const extractedData = {
-    is_interested: {
-      value: data_collection_results.is_interested?.value || null,
-      rationale:
-        data_collection_results.is_interested?.rationale ||
-        "No rationale provided",
-    },
-    needs_matchmaking: {
-      value: data_collection_results.needs_matchmaking?.value || null,
-      rationale:
-        data_collection_results.needs_matchmaking?.rationale ||
-        "No rationale provided",
-    },
     unanswered_questions: {
       value: data_collection_results.unanswered_questions?.value || null,
       rationale:
@@ -127,12 +115,7 @@ const handlePostCallTranscription = async (webhookData) => {
   });
 
   // Determine call outcome based on extracted data
-  let callOutcome = "notinterested";
-  if (extractedData.needs_matchmaking.value === true) {
-    callOutcome = "need_matchmaking";
-  } else if (extractedData.is_interested.value === true) {
-    callOutcome = "interested";
-  }
+  let callOutcome = extractedData.lead_state.value || "unknown";
 
   // Build summary with unanswered questions if applicable
   let fullSummary = summary;
