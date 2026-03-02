@@ -114,6 +114,16 @@ const handlePostCallTranscription = async (webhookData) => {
     );
   });
 
+  console.log("Dynamic Variable:");
+
+  Object.keys(
+    data.conversation_initiation_client_data.dynamic_variables || {},
+  ).forEach((key) => {
+    console.log(
+      `  ${key}: ${data.conversation_initiation_client_data.dynamic_variables[key]}`,
+    );
+  });
+
   // Determine call outcome based on extracted data
   let callOutcome = extractedData.lead_state.value || "unknown";
 
