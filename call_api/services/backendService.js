@@ -22,14 +22,24 @@ const buildBackendRequestBody = ({
   summary = "",
   duration = 0,
   callOutcome = "unknown",
-}) => ({
-  leadID: String(leadID),
-  contactName: contactName || "null",
-  callId: callId || "null",
-  summary: summary || "",
-  duration: duration || 0,
-  callOutcome: callOutcome || "unknown",
-});
+  propertyDto = null,
+}) => {
+  const requestBody = {
+    leadID: String(leadID),
+    contactName: contactName || "null",
+    callId: callId || "null",
+    summary: summary || "",
+    duration: duration || 0,
+    callOutcome: callOutcome || "unknown",
+  };
+
+  // Include propertyDto only if provided (for resales)
+  if (propertyDto) {
+    requestBody.propertyDto = propertyDto;
+  }
+
+  return requestBody;
+}; 
 
 // Helper function to send data to backend webhook
 const sendToBackend = async (requestBody) => {

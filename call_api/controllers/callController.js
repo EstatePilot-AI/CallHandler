@@ -4,7 +4,7 @@ const {
   buildBackendRequestBody,
   sendToBackend,
 } = require("../services/backendService");
-const getAgentConfig = require("../config/agentConfigRouter");
+const getAgentConfig = require("../config/agentsConfig/agentConfigRouter");
 
 exports.outboundCallViaTwillo = catchAsync(async (req, res, next) => {
   console.log("Request Body:", req.body);

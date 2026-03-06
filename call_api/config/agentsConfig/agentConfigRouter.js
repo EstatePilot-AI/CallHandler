@@ -22,17 +22,17 @@ const getAgentConfig = (callType, requestBody, to_number) => {
       dynamic_variables: agentPrompt.dynamic_variables,
 
       conversation_config_override: {
-        turn: {
-          speculative_turn: true,
-          turn_eagerness: 0.8,
-        },
+        // turn: {
+        //   speculative_turn: true,
+        //   turn_eagerness: 0.8,
+        // },
         tts: {
           voice_id: process.env.elevenLabsVoiceID,
-          voice_settings: {
-            stability: 0.5,
-            speed: 1.3,
-            similarity_boost: 0.75,
-          },
+          // voice_settings: {
+          //   stability: 0.5,
+          //   speed: 1.20,
+          //   similarity_boost: 0.75,
+          // },
         },
         agent: {
           prompt: {
