@@ -62,8 +62,8 @@ app.use("/api/v1/call", callRoutes);
 app.use("/api/v1/conv", convRoutes);
 app.use("/webhook", webhookRoutes);
 
-// Serve index.html at root
-app.get("/", (req, res) => {
+// Serve index.html at /demo
+app.get("/demo", (req, res) => {
   res.sendFile(path.join(__dirname, "public", "index.html"));
 });
 
