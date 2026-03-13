@@ -23,6 +23,7 @@ const buildBackendRequestBody = ({
   duration = 0,
   callOutcome = "unknown",
   propertyDto = null,
+  callType = "unknown",
 }) => {
   const requestBody = {
     leadID: String(leadID),
@@ -31,6 +32,7 @@ const buildBackendRequestBody = ({
     summary: summary || "",
     duration: duration || 0,
     callOutcome: callOutcome || "unknown",
+    callType: callType || "unknown",
   };
 
   // Include propertyDto only if provided (for resales)
@@ -39,11 +41,19 @@ const buildBackendRequestBody = ({
   }
 
   return requestBody;
-}; 
+};
 
 // Helper function to send data to backend webhook
 const sendToBackend = async (requestBody) => {
-  const backendUrl = process.env.BACKEND_Webhook_URL;
+  let backendUrl;
+  if (requestBody.callType === "resales") {
+    backendUrl =
+      process.env.BACKEND_Webhook_URL + "/Property/HandleCallOutcomeFromSeller";
+  } else {
+    backendUrl =
+      process.env.BACKEND_Webhook_URL +
+      "/HandleCallFromBuyer/HandleCallOutcome";
+  }
 
   if (!backendUrl) {
     throw new Error("BACKEND_Webhook_URL is not configured");

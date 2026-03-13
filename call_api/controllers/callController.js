@@ -61,6 +61,7 @@ exports.outboundCallViaTwillo = catchAsync(async (req, res, next) => {
       }`,
       duration: 0,
       callOutcome: "failed",
+      callType,
     });
 
     try {

@@ -34,6 +34,7 @@ const handleCallInitiationFailure = async (webhookData) => {
     summary: `Call initiation failed: ${failureReason}`,
     duration: 0,
     callOutcome,
+    callType: webhookData.callType || "unknown",
   });
 
   await sendToBackend(backendRequestBody);
@@ -50,6 +51,7 @@ const handleUnknownWebhook = async (webhookData) => {
     duration: 0,
     leadID: "null",
     contactName: "null",
+    callType: webhookData.callType || "unknown",
   });
 
   await sendToBackend(backendRequestBody);

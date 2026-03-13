@@ -130,6 +130,7 @@ const handleResalesPostCallTranscription = async (webhookData) => {
         apartmentNumber: propertyData.apartmentNumber,
       },
     },
+    callType: webhookData.callType || "unknown",
   });
 
   await sendToBackend(backendRequestBody);

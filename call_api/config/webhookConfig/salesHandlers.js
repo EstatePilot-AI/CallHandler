@@ -74,6 +74,7 @@ const handleSalesPostCallTranscription = async (webhookData) => {
     summary: fullSummary,
     duration: callDuration,
     callOutcome,
+    callType: webhookData.callType || "unknown",
   });
 
   await sendToBackend(backendRequestBody);
