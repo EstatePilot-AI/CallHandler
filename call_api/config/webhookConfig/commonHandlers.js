@@ -11,7 +11,9 @@ const handleCallInitiationFailure = async (webhookData) => {
 
   const conversationId = webhookData.conversation_id;
   const conversationData = await fetchConversationData(conversationId);
-
+  const callType =
+    webhookData.conversation_initiation_client_data.dynamic_variables
+      .leadInfo__callType || "unknown";
   const { leadID, contactName } = extractLeadInfo(conversationData);
   const failureReason = webhookData.failure_reason || "Unknown reason";
 
@@ -34,7 +36,7 @@ const handleCallInitiationFailure = async (webhookData) => {
     summary: `Call initiation failed: ${failureReason}`,
     duration: 0,
     callOutcome,
-    callType: webhookData.callType || "unknown",
+    callType,
   });
 
   await sendToBackend(backendRequestBody);
@@ -51,7 +53,7 @@ const handleUnknownWebhook = async (webhookData) => {
     duration: 0,
     leadID: "null",
     contactName: "null",
-    callType: webhookData.callType || "unknown",
+    callType: "unknown",
   });
 
   await sendToBackend(backendRequestBody);
