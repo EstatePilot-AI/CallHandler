@@ -12,7 +12,7 @@ const handleCallInitiationFailure = async (webhookData) => {
   const conversationId = webhookData.conversation_id;
   const conversationData = await fetchConversationData(conversationId);
   const callType =
-    webhookData.conversation_initiation_client_data.dynamic_variables
+    conversationData.conversation_initiation_client_data.dynamic_variables
       .leadInfo__callType || "unknown";
   const { leadID, contactName } = extractLeadInfo(conversationData);
   const failureReason = webhookData.failure_reason || "Unknown reason";
