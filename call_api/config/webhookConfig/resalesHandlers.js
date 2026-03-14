@@ -21,7 +21,9 @@ const handleResalesPostCallTranscription = async (webhookData) => {
   const callDuration = webhookData.metadata.call_duration_secs;
   const summary = webhookData.analysis.transcript_summary;
   const data_collection_results = webhookData.analysis.data_collection_results;
-
+  const callType =
+    webhookData.conversation_initiation_client_data.dynamic_variables
+      .leadInfo__callType || "unknown";
   console.log(data_collection_results);
 
   // Extract data collection results with safe defaults
@@ -130,7 +132,7 @@ const handleResalesPostCallTranscription = async (webhookData) => {
         apartmentNumber: propertyData.apartmentNumber,
       },
     },
-    callType: webhookData.callType || "unknown",
+    callType,
   });
 
   await sendToBackend(backendRequestBody);

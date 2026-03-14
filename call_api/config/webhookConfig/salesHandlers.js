@@ -66,6 +66,9 @@ const handleSalesPostCallTranscription = async (webhookData) => {
   if (extractedData.unanswered_questions.value === true) {
     fullSummary += `, Unanswered Questions: ${extractedData.unanswered_questions.rationale}`;
   }
+  const callType =
+    webhookData.conversation_initiation_client_data.dynamic_variables
+      .leadInfo__callType || "unknown";
 
   const backendRequestBody = buildBackendRequestBody({
     leadID,
@@ -74,7 +77,7 @@ const handleSalesPostCallTranscription = async (webhookData) => {
     summary: fullSummary,
     duration: callDuration,
     callOutcome,
-    callType: webhookData.callType || "unknown",
+    callType,
   });
 
   await sendToBackend(backendRequestBody);
