@@ -22,6 +22,8 @@ exports.outboundCallViaTwillo = catchAsync(async (req, res, next) => {
   }
 
   if (process.env.NODE_ENV === "testing") {
+    console.log("You re Simulating this req, WakeUp");
+    
     sendToBackend(
       buildBackendRequestBody({
         leadID: req.body.leadInfo.id,
