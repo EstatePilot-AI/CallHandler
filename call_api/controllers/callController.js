@@ -20,6 +20,30 @@ exports.outboundCallViaTwillo = catchAsync(async (req, res, next) => {
       new AppError("Missing required field(s): callType, id, and phone", 400),
     );
   }
+
+  if (process.env.NODE_ENV === "testing") {
+    sendToBackend(
+      buildBackendRequestBody({
+        leadID: req.body.leadInfo.id,
+        contactName: req.body.leadInfo.name,
+        summary: "Test mode - call initiation simulated to be busy.",
+        duration: 0,
+        callOutcome: "busy",
+        callType: req.body.callType,
+      }),
+    ).catch((err) => {
+      console.error("Error sending to backend in test mode:", err);
+    });
+
+    return res.status(200).json({
+      status: "success",
+      data: {
+        message: "Outbound call initiated successfully (Test Mode)",
+        to_number: req.body.leadInfo.phone,
+        callType: req.body.callType,
+      },
+    });
+  }
   const { callType, to_number } = {
     callType: req.body.callType,
     to_number: req.body.leadInfo.phone,
