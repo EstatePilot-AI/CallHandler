@@ -15,7 +15,9 @@ const fetchConversationData = async (conversationId) => {
   );
 
   if (!response.ok) {
-    throw new Error(`Failed to fetch conversation data: ${response.statusText}`);
+    throw new Error(
+      `Failed to fetch conversation data: ${response.statusText}`,
+    );
   }
 
   return await response.json();
@@ -23,15 +25,7 @@ const fetchConversationData = async (conversationId) => {
 
 exports.fetchConversationData = fetchConversationData;
 
-exports.getConversationWithId = catchAsync(async (req, res, next) => {
-  const conversationId = req.params.id;
-  if (!conversationId) {
-    return next(new AppError("Conversation ID parameter is missing", 400));
-  }
 
-  const conversationData = await fetchConversationData(conversationId);
-  res.status(200).json({ status: "success", data: conversationData });
-});
 
 exports.getConversationRecordings = catchAsync(async (req, res, next) => {
   const conversationId = req.params.id;
@@ -71,4 +65,45 @@ exports.getConversationRecordings = catchAsync(async (req, res, next) => {
     // Send the audio buffer
     res.status(200).send(buffer);
   }
+});
+
+exports.getConversationWithId = catchAsync(async (req, res, next) => {
+  const conversationId = req.params.id;
+  if (!conversationId) {
+    return next(new AppError("Conversation ID parameter is missing", 400));
+  }
+  const conversationData = await fetchConversationData(conversationId);
+  res.status(200).json({ status: "success", data: conversationData });
+});
+
+exports.getConversationData = catchAsync(async (req, res, next) => {
+  const conversationId = req.params.id;
+  if (!conversationId) {
+    return next(new AppError("Conversation ID parameter is missing", 400));
+  }
+
+  const conversationData = await fetchConversationData(conversationId);
+  const evaluationCriteriaResultsList =
+    conversationData?.analysis?.evaluation_criteria_results_list;
+  const dataCollectionResultsList =
+    conversationData?.analysis?.data_collection_results_list;
+  const dynamicVariables =
+    conversationData?.conversation_initiation_client_data?.dynamic_variables;
+  const transcript = conversationData?.transcript;
+
+  const structuredData = {
+    conversation_id: conversationData.conversation_id,
+    agent_id: conversationData.agent_id,
+    to_number: conversationData.to_number,
+    from_number: conversationData.from_number,
+    evaluation_criteria_results_list:
+      evaluationCriteriaResultsList === undefined
+        ? []
+        : evaluationCriteriaResultsList,
+    data_collection_results_list:
+      dataCollectionResultsList === undefined ? [] : dataCollectionResultsList,
+    dynamic_variables: dynamicVariables === undefined ? {} : dynamicVariables,
+    transcript: transcript === undefined ? [] : transcript,
+  };
+  res.status(200).json({ status: "success", data: structuredData });
 });

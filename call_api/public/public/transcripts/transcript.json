@@ -10,16 +10,16 @@
       "record_path": "public\\audioFiles\\scenario_1_record.mp3",
       "scenario_name": "Normal interested buyer",
       "description": "A normal interested buyer in an apartment in Cairo.",
-      "Summary": "Hazem from Estate Pilot contacted Marcelino Edward about an apartment in Cairo, specifically on 90th Street. The apartment is 200 square meters, has three rooms and a bathroom, and is priced at 3 million Egyptian pounds (negotiable). It's fully finished and located in a building with an elevator and private garage. Marcelino requested the details and a viewing appointment. Hazem will send the location and details via WhatsApp and call to schedule a viewing.",
+      "Summary": "{{agentName}} from Estate Pilot contacted Marcelino Edward about an apartment in Cairo, specifically on 90th Street. The apartment is 200 square meters, has three rooms and a bathroom, and is priced at 3 million Egyptian pounds (negotiable). It's fully finished and located in a building with an elevator and private garage. Marcelino requested the details and a viewing appointment. {{agentName}} will send the location and details via WhatsApp and call to schedule a viewing.",
       "conversation_id": "conv_6101kjfqtw49ehgvt77k96z34jy5",
       "Transcript": [
         {
           "role": "agent",
-          "message": "سلام عليكم! مع حضرتك حازم من Estate Pilot. هل بكلم أستاذ مارسلينو ادوارد؟"
+          "message": "سلام عليكم! مع حضرتك {{agentName}} من Estate Pilot. هل بكلم أستاذ مارسلينو ادوارد؟"
         },
         {
           "role": "user",
-          "message": "أيوة أنا مارسلينو إدوارد، أهلاً وسهلاً. بتكلمني بخصوص إيه يا حازم؟"
+          "message": "أيوة أنا مارسلينو إدوارد، أهلاً وسهلاً. بتكلمني بخصوص إيه يا {{agentName}}؟"
         },
         {
           "role": "agent",
@@ -51,7 +51,7 @@
         },
         {
           "role": "user",
-          "message": "ماشي يا حازم، طب قولي هي العمارة دي فيها أسانسير، جراج، أي خدمات؟"
+          "message": "ماشي يا {{agentName}}، طب قولي هي العمارة دي فيها أسانسير، جراج، أي خدمات؟"
         },
         {
           "role": "agent",
@@ -75,7 +75,7 @@
       "Transcript": [
         {
           "role": "agent",
-          "message": "سلام عليكم! مع حضرتك حازم من Estate Pilot. هل بكلم أستاذ مارسلينو ادوارد؟"
+          "message": "سلام عليكم! مع حضرتك {{agentName}} من Estate Pilot. هل بكلم أستاذ مارسلينو ادوارد؟"
         },
         {
           "role": "user",
@@ -123,7 +123,7 @@
       "Transcript": [
         {
           "role": "agent",
-          "message": "سلام عليكم! مع حضرتك حازم من Estate Pilot. هل بكلم أستاذ مارسلينو ادوارد؟"
+          "message": "سلام عليكم! مع حضرتك {{agentName}} من Estate Pilot. هل بكلم أستاذ مارسلينو ادوارد؟"
         },
         {
           "role": "user",
@@ -193,7 +193,7 @@
       "Transcript": [
         {
           "role": "agent",
-          "message": "سلام عليكم! مع حضرتك حازم من Estate Pilot. هل بكلم أستاذ مارسلينو ادوارد؟"
+          "message": "سلام عليكم! مع حضرتك {{agentName}} من Estate Pilot. هل بكلم أستاذ مارسلينو ادوارد؟"
         },
         {
           "role": "user",
@@ -223,3 +223,4 @@
     }
   ]
 }
+

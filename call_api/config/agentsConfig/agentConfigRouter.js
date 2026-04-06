@@ -28,11 +28,11 @@ const getAgentConfig = (callType, requestBody, to_number) => {
         // },
         tts: {
           voice_id: process.env.elevenLabsVoiceID,
-          // voice_settings: {
-          //   stability: 0.5,
-          //   speed: 1.20,
-          //   similarity_boost: 0.75,
-          // },
+          voice_settings: {
+            //   stability: 0.5,
+            //   similarity_boost: 0.75,
+            speed: 1.2,
+          },
         },
         agent: {
           prompt: {

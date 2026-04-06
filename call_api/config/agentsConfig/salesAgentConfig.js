@@ -1,8 +1,12 @@
 // Agent Configuration for Sales
 const getAgentConfigForSales = (requestBody) => {
+  const agentName = process.env.agentName || "Agent";
   const salesAgentPrompt =
-    process.env.SALES_AGENT_PROMPT ||
-    "You are Hazem from Estate Pilot. Qualify the lead, keep responses concise, and stay focused on property sales using provided dynamic variables only.";
+    (
+      process.env.SALES_AGENT_PROMPT ||
+      `You are ${agentName} from Estate Pilot. Qualify the lead, keep responses concise, and stay focused on property sales using provided dynamic variables only.`
+    )
+      .replaceAll("{{agentName}}", agentName);
 
   return {
     dynamic_variables: {
@@ -31,10 +35,11 @@ const getAgentConfigForSales = (requestBody) => {
       propInfo__location__apartmentNumber:
         requestBody.propInfo.location.apartmentNumber || "null",
       propInfo__additionalInfo: requestBody.propInfo.additional_info || "null",
+      agentName,
     },
     prompt: salesAgentPrompt,
     first_message:
-      "سلام عليكم! مع حضرتك حازم من Estate Pilot. هل بكلم أستاذ {{leadInfo__name}}؟",
+      `سلام عليكم! مع حضرتك ${agentName} من Estate Pilot. هل بكلم أستاذ {{leadInfo__name}}؟`,
   };
 };
 

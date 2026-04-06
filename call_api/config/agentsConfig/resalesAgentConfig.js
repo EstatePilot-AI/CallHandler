@@ -1,8 +1,12 @@
 // Agent Configuration for Resales (Underdeveloped - Placeholder)
 const getAgentConfigForResales = (requestBody) => {
+  const agentName = process.env.agentName || "Agent";
   const resalesAgentPrompt =
-    process.env.RESALES_AGENT_PROMPT ||
-    "You are Hazem from Estate Pilot. Convince owners to list for free and collect complete resale property details step by step.";
+    (
+      process.env.RESALES_AGENT_PROMPT ||
+      `You are ${agentName} from Estate Pilot. Convince owners to list for free and collect complete resale property details step by step.`
+    )
+      .replaceAll("{{agentName}}", agentName);
 
   return {
     dynamic_variables: {
@@ -11,11 +15,12 @@ const getAgentConfigForResales = (requestBody) => {
       leadInfo__callType: requestBody.callType || "null",
       leadInfo__name: requestBody.leadInfo.name || "null",
       leadInfo__phone: requestBody.leadInfo.phone || "null",
+      agentName,
       // Additional resales-specific variables to be added
     },
     prompt: resalesAgentPrompt,
     first_message:
-      "سلام عليكم! مع حضرتك حازم من Estate Pilot. هل بكلم أستاذ {{leadInfo__name}}؟",
+      `سلام عليكم! مع حضرتك ${agentName} من Estate Pilot. هل بكلم أستاذ {{leadInfo__name}}؟`,
   };
 };
 
