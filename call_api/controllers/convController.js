@@ -89,6 +89,13 @@ exports.getConversationData = catchAsync(async (req, res, next) => {
     conversationData?.analysis?.data_collection_results_list;
   const dynamicVariables =
     conversationData?.conversation_initiation_client_data?.dynamic_variables;
+  const dynamicVariablesList =
+    dynamicVariables === undefined
+      ? []
+      : Object.entries(dynamicVariables).map(([key, value]) => ({
+          dynamic_variable_id: key,
+          value,
+        }));
   const transcript = conversationData?.transcript;
 
   const structuredData = {
@@ -102,7 +109,7 @@ exports.getConversationData = catchAsync(async (req, res, next) => {
         : evaluationCriteriaResultsList,
     data_collection_results_list:
       dataCollectionResultsList === undefined ? [] : dataCollectionResultsList,
-    dynamic_variables: dynamicVariables === undefined ? {} : dynamicVariables,
+    dynamic_variables_list: dynamicVariablesList,
     transcript: transcript === undefined ? [] : transcript,
   };
   res.status(200).json({ status: "success", data: structuredData });

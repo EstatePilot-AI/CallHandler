@@ -7,7 +7,9 @@ const {
 const router = express.Router({ mergeParams: true });
 
 router.route("/:id").get(getConversationWithId);
+
 router.route("/:id/data").get(getConversationData);
 router.route("/:id/audio").get(getConversationRecordings);
 
 module.exports = router;
+
