@@ -89,6 +89,19 @@ exports.getConversationData = catchAsync(async (req, res, next) => {
     conversationData?.analysis?.data_collection_results_list;
   const dynamicVariables =
     conversationData?.conversation_initiation_client_data?.dynamic_variables;
+  const callType = dynamicVariables?.leadInfo__callType;
+  const filteredDataCollectionResultsList =
+    dataCollectionResultsList === undefined
+      ? []
+      : callType === "sales"
+        ? dataCollectionResultsList.filter(
+            (item) =>
+              item?.data_collection_id === "unanswered_questions" ||
+              item?.data_collection_id === "lead_state",
+          )
+        : dataCollectionResultsList.filter(
+            (item) => item?.data_collection_id !== "lead_state",
+          );
   const dynamicVariablesList =
     dynamicVariables === undefined
       ? []
@@ -109,8 +122,7 @@ exports.getConversationData = catchAsync(async (req, res, next) => {
       evaluationCriteriaResultsList === undefined
         ? []
         : evaluationCriteriaResultsList,
-    data_collection_results_list:
-      dataCollectionResultsList === undefined ? [] : dataCollectionResultsList,
+    data_collection_results_list: filteredDataCollectionResultsList,
     dynamic_variables_list: dynamicVariablesList,
     transcript: transcript === undefined ? [] : transcript,
   };
