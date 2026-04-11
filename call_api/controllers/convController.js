@@ -92,10 +92,12 @@ exports.getConversationData = catchAsync(async (req, res, next) => {
   const dynamicVariablesList =
     dynamicVariables === undefined
       ? []
-      : Object.entries(dynamicVariables).map(([key, value]) => ({
-          dynamic_variable_id: key,
-          value,
-        }));
+      : Object.entries(dynamicVariables)
+          .filter(([key]) => !key.startsWith("system"))
+          .map(([key, value]) => ({
+            dynamic_variable_id: key,
+            value,
+          }));
   const transcript = conversationData?.transcript;
 
   const structuredData = {
