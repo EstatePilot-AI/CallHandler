@@ -25,8 +25,6 @@ const fetchConversationData = async (conversationId) => {
 
 exports.fetchConversationData = fetchConversationData;
 
-
-
 exports.getConversationRecordings = catchAsync(async (req, res, next) => {
   const conversationId = req.params.id;
   if (!conversationId) {
@@ -83,6 +81,9 @@ exports.getConversationData = catchAsync(async (req, res, next) => {
   }
 
   const conversationData = await fetchConversationData(conversationId);
+  const callCost =
+    (0.187 * (conversationData?.metadata?.call_duration_secs || 0)) / 60;
+
   const evaluationCriteriaResultsList =
     conversationData?.analysis?.evaluation_criteria_results_list;
   const dataCollectionResultsList =
@@ -114,10 +115,18 @@ exports.getConversationData = catchAsync(async (req, res, next) => {
   const transcript = conversationData?.transcript;
 
   const structuredData = {
-    conversation_id: conversationData.conversation_id,
-    agent_id: conversationData.agent_id,
-    to_number: conversationData.to_number,
-    from_number: conversationData.from_number,
+    metadata: {
+      conversation_id: conversationData.conversation_id,
+      agent_id: conversationData.agent_id,
+      to_number: conversationData.to_number,
+      from_number: conversationData.from_number,
+      conversation_duration_seconds:
+        conversationData?.metadata?.call_duration_secs,
+      charging: {
+        call_cost: callCost,
+        llm_cost: conversationData?.metadata?.charging?.llm_price || 0,
+      },
+    },
     evaluation_criteria_results_list:
       evaluationCriteriaResultsList === undefined
         ? []
