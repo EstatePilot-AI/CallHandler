@@ -66,6 +66,9 @@ const handleSalesPostCallTranscription = async (webhookData) => {
   if (extractedData.unanswered_questions.value === true) {
     fullSummary += `, Unanswered Questions: ${extractedData.unanswered_questions.rationale}`;
   }
+  
+  const matchedPropertyId = extractedData?.matchedPropertyId?.value;
+  
   const callType =
     webhookData.conversation_initiation_client_data.dynamic_variables
       .leadInfo__callType || "unknown";
@@ -78,6 +81,7 @@ const handleSalesPostCallTranscription = async (webhookData) => {
     duration: callDuration,
     callOutcome,
     callType,
+    propertyId: matchedPropertyId || null
   });
 
   await sendToBackend(backendRequestBody);
