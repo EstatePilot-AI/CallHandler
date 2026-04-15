@@ -98,10 +98,13 @@ exports.getConversationData = catchAsync(async (req, res, next) => {
         ? dataCollectionResultsList.filter(
             (item) =>
               item?.data_collection_id === "unanswered_questions" ||
-              item?.data_collection_id === "lead_state",
+              item?.data_collection_id === "lead_state" ||
+              item?.data_collection_id === "propertyId",
           )
         : dataCollectionResultsList.filter(
-            (item) => item?.data_collection_id !== "lead_state",
+            (item) =>
+              item?.data_collection_id !== "lead_state" &&
+              item?.data_collection_id !== "propertyId",
           );
   const dynamicVariablesList =
     dynamicVariables === undefined
