@@ -121,8 +121,8 @@ exports.getConversationData = catchAsync(async (req, res, next) => {
     metadata: {
       conversation_id: conversationData.conversation_id,
       agent_id: conversationData.agent_id,
-      to_number: conversationData.metadata.phone_call.external_number,
-      from_number: conversationData.metadata.phone_call.internal_number,
+      to_number: conversationData?.metadata?.phone_call?.external_number,
+      from_number: conversationData?.metadata?.phone_call?.agent_number,
       conversation_duration_seconds:
         conversationData?.metadata?.call_duration_secs,
       charging: {
