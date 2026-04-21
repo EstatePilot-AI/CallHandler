@@ -110,6 +110,7 @@ exports.getConversationData = catchAsync(async (req, res, next) => {
     dynamicVariables === undefined
       ? []
       : Object.entries(dynamicVariables)
+          .filter(([key]) => !key.startsWith("system__conversation_history "))
           .map(([key, value]) => ({
             dynamic_variable_id: key,
             value,
