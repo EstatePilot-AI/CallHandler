@@ -110,7 +110,20 @@ exports.getConversationData = catchAsync(async (req, res, next) => {
     dynamicVariables === undefined
       ? []
       : Object.entries(dynamicVariables)
-          .filter(([key]) => !key.startsWith("system__conversation_history "))
+          .filter(
+            ([key]) =>
+              !key.startsWith("system__") ||
+              [
+                "system__agent_turns",
+                "system__agent_id",
+                "system__current_agent_turns",
+                "system__conversation_id",
+                "system__call_duration_secs",
+                "system__time",
+                "system__caller_id",
+                "system__called_number",
+              ].includes(key),
+          )
           .map(([key, value]) => ({
             dynamic_variable_id: key,
             value,
