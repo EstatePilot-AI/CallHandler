@@ -36,7 +36,7 @@ const getAgentConfig = (callType, requestBody, to_number) => {
         },
         agent: {
           prompt: {
-            prompt: agentPrompt.prompt,
+            prompt: process.env.GENERAL_AGENT_PROMPT + agentPrompt.prompt,
           },
           first_message: agentPrompt.first_message,
           language: "ar",
